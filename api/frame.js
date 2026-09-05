@@ -88,6 +88,16 @@ function buildFramedSvg(svgText, opts) {
   const innerWidth = parseInt(widthMatch[1], 10);
   const innerHeight = parseInt(heightMatch[1], 10);
 
+  // Preserve font-family / font-size from the original opening <svg> tag —
+  // the card's text elements inherit these rather than setting them per
+  // element, and its line-height math is built assuming this exact font
+  // size. Losing it when we re-nest the content changes text metrics and
+  // throws off vertical spacing.
+  const fontFamilyMatch = openTagMatch[0].match(/font-family="([^"]*)"/);
+  const fontSizeMatch = openTagMatch[0].match(/font-size="([^"]*)"/);
+  const fontFamily = fontFamilyMatch ? fontFamilyMatch[1] : 'Consolas,Monaco,monospace';
+  const fontSize = fontSizeMatch ? fontSizeMatch[1] : '16px';
+
   // Keep everything between the opening <svg ...> tag and the closing
   // </svg> tag (the style block, background rect, and text content),
   // and re-nest it inside our own frame untouched.
@@ -118,7 +128,7 @@ function buildFramedSvg(svgText, opts) {
     ${dots}
     <text x="${outerWidth / 2}" y="${midY + 5}" text-anchor="middle" font-family="Consolas,Monaco,monospace" font-size="13" fill="#8c8ea3">${escapeXml(opts.label)}</text>
     <g transform="translate(${BORDER}, ${TITLE_BAR_HEIGHT + BORDER})">
-      <svg width="${innerWidth}px" height="${innerHeight}px" xmlns="http://www.w3.org/2000/svg">
+      <svg width="${innerWidth}px" height="${innerHeight}px" font-family="${fontFamily}" font-size="${fontSize}" xmlns="http://www.w3.org/2000/svg">
         ${innerContent}
       </svg>
     </g>
