@@ -1,0 +1,7 @@
+{
+  "name": "ghfetch-frame",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Terminal-window frame wrapper for neofetch-profile GitHub cards."
+}
